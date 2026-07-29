@@ -5,8 +5,9 @@
   "description": "Hệ thống Quản lý Hồ sơ Hoàn",
   "//type": "shared/*.js nằm ở gốc nên phải khai báo ESM ở đây, nếu không Node phải đoán rồi parse lại từ đầu.",
   "type": "module",
+  "//install:all": "--include=dev là bắt buộc: nền tảng hosting đặt NODE_ENV=production lúc build, npm khi đó bỏ qua devDependencies — mà vite và tailwindcss của frontend nằm đúng ở đó nên build sẽ fail.",
   "scripts": {
-    "install:all": "npm install --prefix server && npm install --prefix frontend",
+    "install:all": "npm install --include=dev --prefix server && npm install --include=dev --prefix frontend",
     "dev": "concurrently -n api,web -c blue,green \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "npm --prefix server run dev",
     "dev:web": "npm --prefix frontend run dev",

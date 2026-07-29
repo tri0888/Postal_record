@@ -112,38 +112,9 @@ cookie phiên hoạt động bình thường và không cần cấu hình CORS.
 
 `npm run dev:api` dùng `node --watch`, sửa file server là tự khởi động lại.
 
-### Kết nối Atlas không được
-
-| Lỗi | Nguyên nhân và cách sửa |
-|---|---|
-| `querySrv ECONNREFUSED` | Chuỗi `mongodb+srv://` phải tra bản ghi DNS loại **SRV**, mà DNS đang dùng từ chối loại truy vấn này. Thêm `MONGODB_DNS_SERVERS=8.8.8.8,1.1.1.1` vào `server/.env`. Hoặc lấy chuỗi không cần SRV ở Atlas → Connect → Drivers → chọn *Node.js 2.2.12 or later*. |
-| Treo rồi báo quá hạn chờ | IP máy chưa được cho phép: Atlas → Network Access → Add Current IP Address, chờ trạng thái **Active**. |
-| `Authentication failed` | Sai user/password. Mật khẩu có ký tự đặc biệt (`@ : / ? # [ ] %`) phải mã hoá URL — `@` viết thành `%40`. |
-
-Server tự nhận diện ba trường hợp này và in ra hướng dẫn tương ứng thay vì ném
-nguyên văn lỗi của driver.
-
 ### Xoá sạch dữ liệu và làm lại từ đầu
 
 ```bash
 npm run db:reset              # chỉ liệt kê sẽ xoá gì, KHÔNG xoá
 npm run db:reset -- --yes     # xoá thật
 ```
-
-Lệnh này xoá trên **CSDL thật ở Atlas** và không có bản sao nào để cứu, nên bắt
-buộc phải có cờ `--yes`. Chạy không cờ thì nó chỉ in ra số tài liệu của từng
-collection để bạn xem trước.
-
-## Bẫy dữ liệu đã xử lý
-
-`shared/excel.js` sinh ra để chống lại các bẫy có thật trong file nguồn — đọc
-phần chú thích đầu file trước khi sửa:
-
-1. **NGÀY HOÀN lẫn lộn kiểu** — có ô là số serial của Excel, có ô là chuỗi
-   `"09/10/2025"`. Chỉ xử lý một dạng là mất hồ sơ khỏi kết quả tra cứu.
-2. **Header có dấu cách thừa, cột nằm rải rác** (`'NGÀY NHẬN (*) '`) — map theo
-   TÊN header, không bao giờ theo vị trí cột.
-3. **Mã quy trình về dạng số thực** `600.0` — phải làm tròn về `600`.
-4. **SỐ HỒ SƠ không duy nhất** — xem quyết định kiến trúc số 2 ở trên.
-6. **Ngày kiểu Việt Nam** `dd/mm/yyyy`, không phải `mm/dd/yyyy`.
-7. **Mã số thuế / điện thoại có số 0 đứng đầu** — luôn giữ dạng chuỗi.

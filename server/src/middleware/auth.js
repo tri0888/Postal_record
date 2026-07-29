@@ -27,8 +27,11 @@ export function issueToken() {
 export function cookieOptions(req) {
   return {
     httpOnly: true,
-    // Chạy trên máy qua http nên không đặt Secure, nếu đặt thì trình duyệt sẽ
-    // vứt cookie đi và không bao giờ đăng nhập được.
+    // Bám theo giao thức thật thay vì đặt cứng: chạy thật qua https thì bật cờ
+    // Secure, còn chạy trên máy qua http mà bật thì trình duyệt vứt cookie đi và
+    // không bao giờ đăng nhập được.
+    // Đọc đúng được giá trị này là nhờ `app.set('trust proxy', 1)` ở index.js —
+    // sau reverse proxy, giao thức thật nằm trong header X-Forwarded-Proto.
     secure: req.protocol === 'https',
     sameSite: 'lax',
     path: '/',
