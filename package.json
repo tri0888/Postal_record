@@ -9,6 +9,7 @@
     "dev:api": "npm --prefix server run dev",
     "dev:web": "npm --prefix frontend run dev",
     "build": "npm run build --prefix frontend",
+    "start": "npm start --prefix server",
     "db:init": "node server/scripts/db-init.js",
     "db:reset": "node server/scripts/db-reset.js"
   },
