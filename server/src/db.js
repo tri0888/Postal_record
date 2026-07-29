@@ -2,8 +2,9 @@
  * Kết nối MongoDB và khai báo index.
  */
 
+import dns from 'node:dns';
 import { MongoClient } from 'mongodb';
-import { MONGODB_DB, MONGODB_URI } from './config.js';
+import { MONGODB_DB, MONGODB_DNS_SERVERS, MONGODB_URI } from './config.js';
 
 export const COL = {
   units: 'units',
@@ -15,10 +16,64 @@ export const COL = {
 let client = null;
 let database = null;
 
+/**
+ * Dịch lỗi kết nối của driver ra câu người dùng hiểu được kèm cách sửa.
+ * Nguyên văn lỗi của driver (`querySrv ECONNREFUSED …`) không nói cho ai biết
+ * phải làm gì tiếp theo.
+ */
+function explainConnectError(err) {
+  const msg = String(err?.message ?? err);
+
+  // Tra bản ghi SRV thất bại — chưa hề chạm tới được Atlas.
+  if (/querySrv|_mongodb\._tcp/i.test(msg)) {
+    return (
+      `Không tra được bản ghi DNS SRV của Atlas.\n  (${msg})\n\n` +
+      'Chuỗi mongodb+srv:// phải tra DNS loại SRV trước khi kết nối, mà DNS máy\n' +
+      'bạn đang dùng từ chối loại truy vấn này. Chọn MỘT trong ba cách:\n\n' +
+      '  1. Thêm vào server/.env  (gọn nhất, không đụng cấu hình mạng):\n' +
+      '       MONGODB_DNS_SERVERS=8.8.8.8,1.1.1.1\n\n' +
+      '  2. Dùng chuỗi kết nối KHÔNG cần SRV: ở Atlas vào Connect > Drivers,\n' +
+      '     chọn Node.js phiên bản 2.2.12 or later — nó cho chuỗi mongodb://\n' +
+      '     liệt kê thẳng các host, bỏ qua hoàn toàn bước tra SRV.\n\n' +
+      '  3. Đổi DNS của máy sang 8.8.8.8 hoặc 1.1.1.1.'
+    );
+  }
+
+  if (/Authentication failed|bad auth/i.test(msg)) {
+    return (
+      `Sai tài khoản CSDL.\n  (${msg})\n\n` +
+      'Kiểm tra user/password trong MONGODB_URI. Mật khẩu có ký tự đặc biệt\n' +
+      '(@ : / ? # [ ] %) thì phải mã hoá URL, ví dụ @ viết thành %40.'
+    );
+  }
+
+  if (/ServerSelection|ETIMEOUT|ETIMEDOUT/i.test(msg)) {
+    return (
+      `Kết nối tới Atlas quá hạn chờ.\n  (${msg})\n\n` +
+      'Thường là do IP máy bạn chưa được cho phép: vào Atlas > Network Access\n' +
+      '> Add IP Address > Add Current IP Address, chờ trạng thái chuyển Active.'
+    );
+  }
+
+  return msg;
+}
+
 export async function connect() {
   if (database) return database;
+
+  // Chỉ đổi DNS cho các hàm dns.resolve* (driver dùng chúng để tra SRV/TXT).
+  // Việc phân giải tên host khi mở kết nối vẫn đi qua DNS của hệ điều hành.
+  if (MONGODB_DNS_SERVERS.length) dns.setServers(MONGODB_DNS_SERVERS);
+
   client = new MongoClient(MONGODB_URI, { serverSelectionTimeoutMS: 15000 });
-  await client.connect();
+  try {
+    await client.connect();
+  } catch (err) {
+    await client.close().catch(() => undefined);
+    client = null;
+    throw new Error(explainConnectError(err));
+  }
+
   database = client.db(MONGODB_DB);
   return database;
 }

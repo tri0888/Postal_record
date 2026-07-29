@@ -112,6 +112,17 @@ cookie phiên hoạt động bình thường và không cần cấu hình CORS.
 
 `npm run dev:api` dùng `node --watch`, sửa file server là tự khởi động lại.
 
+### Kết nối Atlas không được
+
+| Lỗi | Nguyên nhân và cách sửa |
+|---|---|
+| `querySrv ECONNREFUSED` | Chuỗi `mongodb+srv://` phải tra bản ghi DNS loại **SRV**, mà DNS đang dùng từ chối loại truy vấn này. Thêm `MONGODB_DNS_SERVERS=8.8.8.8,1.1.1.1` vào `server/.env`. Hoặc lấy chuỗi không cần SRV ở Atlas → Connect → Drivers → chọn *Node.js 2.2.12 or later*. |
+| Treo rồi báo quá hạn chờ | IP máy chưa được cho phép: Atlas → Network Access → Add Current IP Address, chờ trạng thái **Active**. |
+| `Authentication failed` | Sai user/password. Mật khẩu có ký tự đặc biệt (`@ : / ? # [ ] %`) phải mã hoá URL — `@` viết thành `%40`. |
+
+Server tự nhận diện ba trường hợp này và in ra hướng dẫn tương ứng thay vì ném
+nguyên văn lỗi của driver.
+
 ### Xoá sạch dữ liệu và làm lại từ đầu
 
 ```bash

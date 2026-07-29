@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "description": "Hệ thống Quản lý Hồ sơ Hoàn",
+  "//type": "shared/*.js nằm ở gốc nên phải khai báo ESM ở đây, nếu không Node phải đoán rồi parse lại từ đầu.",
+  "type": "module",
   "scripts": {
     "install:all": "npm install --prefix server && npm install --prefix frontend",
     "dev": "concurrently -n api,web -c blue,green \"npm:dev:api\" \"npm:dev:web\"",

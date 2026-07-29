@@ -19,6 +19,21 @@ export const MONGODB_URI = process.env.MONGODB_URI ?? '';
 export const MONGODB_DB = process.env.MONGODB_DB || 'postal_record';
 export const JWT_SECRET = process.env.JWT_SECRET ?? '';
 
+/**
+ * DNS riêng để tra bản ghi SRV của Atlas.
+ *
+ * Chuỗi `mongodb+srv://` bắt buộc phải tra bản ghi DNS loại SRV trước khi kết
+ * nối. Nhiều DNS của nhà mạng và mạng cơ quan chặn hoặc từ chối loại truy vấn
+ * này, cho ra lỗi `querySrv ECONNREFUSED`. Đặt biến này để riêng phần tra SRV đi
+ * qua một DNS công cộng, không phải sửa cấu hình mạng của cả máy.
+ *
+ * Ví dụ: MONGODB_DNS_SERVERS=8.8.8.8,1.1.1.1
+ */
+export const MONGODB_DNS_SERVERS = (process.env.MONGODB_DNS_SERVERS ?? '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 /** Hệ thống chỉ có MỘT tài khoản. Không có CSDL người dùng, không có phân quyền. */
 export const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';
