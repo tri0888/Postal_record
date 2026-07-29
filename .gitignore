@@ -1,0 +1,17 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Cấu hình riêng của từng môi trường. server/.env chứa connection string MongoDB
+# (có kèm mật khẩu CSDL) và khoá ký cookie đăng nhập.
+# Luôn có server/.env.example đi kèm để biết cần điền những gì.
+.env
+.env.local
+.env.*.local
+
+# Dữ liệu thật (hồ sơ, danh mục đơn vị) — TUYỆT ĐỐI không đưa lên git.
+# File Excel nguồn chứa địa chỉ, mã số thuế, số tài khoản và email cán bộ.
+data/
+# File khoá tạm của Excel, chứa cả tên tài khoản Windows đang mở file.
+~$*
