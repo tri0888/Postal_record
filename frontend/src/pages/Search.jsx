@@ -209,9 +209,9 @@ export default function Search() {
             onChange={(v) => setDraft({ ...draft, ngayHoan: v })}
           />
           <DateFilter
-            label="Ngày nhận"
-            value={draft.ngayNhan}
-            onChange={(v) => setDraft({ ...draft, ngayNhan: v })}
+            label="Ngày trả"
+            value={draft.ngayTra}
+            onChange={(v) => setDraft({ ...draft, ngayTra: v })}
           />
 
           <div className="lg:col-span-1">

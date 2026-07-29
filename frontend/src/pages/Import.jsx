@@ -133,7 +133,7 @@ export default function Import() {
       const groups = chunk(prepared.rows, IMPORT_CHUNK);
 
       for (let i = 0; i < groups.length; i++) {
-        setStage(`Đang nạp lô ${i + 1}/${groups.length}...`);
+        setStage(`Đang import lô ${i + 1}/${groups.length}...`);
         const r = await api.importCommit(
           batchId,
           prepared.kind,
@@ -157,7 +157,7 @@ export default function Import() {
       setPrepared(null);
       loadBatches();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Nạp dữ liệu thất bại');
+      setError(err instanceof Error ? err.message : 'Import dữ liệu thất bại');
     } finally {
       setBusy(false);
       setStage('');
@@ -168,7 +168,7 @@ export default function Import() {
 
   return (
     <div className="space-y-4">
-      <Card title="Nạp dữ liệu từ file Excel">
+      <Card title="Import dữ liệu từ file Excel">
         <div className="space-y-3">
           <input
             type="file"
@@ -192,7 +192,7 @@ export default function Import() {
 
           {result && (
             <Alert kind="success">
-              Đã nạp xong: <b>{result.inserted}</b> dòng thêm mới, <b>{result.updated}</b> dòng cập
+              Đã import xong: <b>{result.inserted}</b> dòng thêm mới, <b>{result.updated}</b> dòng cập
               nhật.
               {result.unknownUnitCodes.length > 0 && (
                 <div className="mt-2 text-amber-800">
@@ -230,7 +230,7 @@ export default function Import() {
                 }}
                 disabled={prepared.rows.length === 0}
               >
-                Nạp vào hệ thống
+                Import vào hệ thống
               </Button>
             </>
           }
@@ -305,11 +305,11 @@ export default function Import() {
         </Card>
       )}
 
-      <Card title="Lịch sử nạp dữ liệu">
+      <Card title="Lịch sử import dữ liệu">
         {batches === null ? (
           <Spinner />
         ) : batches.length === 0 ? (
-          <Empty>Chưa có lần nạp nào.</Empty>
+          <Empty>Chưa có lần import nào.</Empty>
         ) : (
           <div className="table-scroll">
             <table className="w-full min-w-[760px] text-sm">
@@ -322,7 +322,7 @@ export default function Import() {
                   <th className="px-3 py-2 text-right">Thêm mới</th>
                   <th className="px-3 py-2 text-right">Cập nhật</th>
                   <th className="px-3 py-2 text-right">Lỗi</th>
-                  <th className="px-3 py-2 text-left">Người nạp</th>
+                  <th className="px-3 py-2 text-left">Người import</th>
                 </tr>
               </thead>
               <tbody>
@@ -360,7 +360,7 @@ export default function Import() {
               Quay lại
             </Button>
             <Button variant="danger" disabled={!confirmChecked} onClick={commit}>
-              Xác nhận nạp
+              Xác nhận import
             </Button>
           </>
         }

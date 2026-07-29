@@ -9,7 +9,7 @@ import Units from './pages/Units';
 const LINKS = [
   ['/', 'Hồ sơ'],
   ['/danh-muc/don-vi', 'Danh mục đơn vị'],
-  ['/nap-du-lieu', 'Nạp dữ liệu'],
+  ['/nap-du-lieu', 'Import dữ liệu'],
 ];
 
 function Nav() {
@@ -18,7 +18,7 @@ function Nav() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-[1%] py-3">
         <span className="font-semibold text-slate-800">Quản lý Hồ sơ Hoàn</span>
 
         <nav className="flex flex-wrap gap-1">
@@ -65,7 +65,7 @@ function Shell() {
   return (
     <div className="min-h-full">
       <Nav />
-      <main className="mx-auto max-w-[1400px] p-4">
+      <main className="px-[1%] py-4">
         <Routes>
           <Route path="/" element={<Search />} />
           <Route path="/danh-muc/don-vi" element={<Units />} />
