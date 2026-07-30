@@ -305,7 +305,7 @@ export default function Import() {
         </Card>
       )}
 
-      <Card title="Lịch sử import dữ liệu">
+      {/* <Card title="Lịch sử import dữ liệu">
         {batches === null ? (
           <Spinner />
         ) : batches.length === 0 ? (
@@ -348,7 +348,7 @@ export default function Import() {
             </table>
           </div>
         )}
-      </Card>
+      </Card> */}
 
       <Modal
         open={confirmOpen}
